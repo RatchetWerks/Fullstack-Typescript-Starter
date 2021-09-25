@@ -1,10 +1,9 @@
-import express from 'express'
-import { createUser } from './UserController';
+import express from "express";
+import { createUser } from "./UserController";
 const authRouter = express.Router();
 
-
-authRouter.get('/login',function (req,res){
-    res.status(200).send(`
+authRouter.get("/login", function (req, res) {
+  res.status(200).send(`
 	<body>
 		<div class="login-form">
 			<h1>Login Form</h1>
@@ -18,16 +17,15 @@ authRouter.get('/login',function (req,res){
 		</div>
 	</body>
   
-  `)  })
+  `);
+});
 
-authRouter.get('/logout',function (req,res){
-  
+authRouter.get("/logout", function (req, res) {
+  res.send("Logout");
+});
 
-    res.send('Logout')
-  })
-
-authRouter.get('/register',function (req,res){
-    res.status(200).send(`
+authRouter.get("/register", function (req, res) {
+  res.status(200).send(`
 	<body>
 		<div class="login-form">
 			<h1>Login Form</h1>
@@ -41,30 +39,26 @@ authRouter.get('/register',function (req,res){
 		</div>
 	</body>	
   
-  `)  })
+  `);
+});
 
-authRouter.post('/register',async function(req,res){
+authRouter.post("/register", async function (req, res) {
+  const { email, password } = req.body;
 
-    const {email,password}=req.body
+  const result = await createUser(email, password).catch((e) => {
+    console.log("Router level");
+    console.error(e);
+  });
 
-    const result= await createUser(email,password)
-	.catch((e)=> {
-		console.log("Router level")
-		console.error(e)})
+  console.log(result);
 
-	 console.log(result)
+  //Convert Node error to HTTP error response heref
 
-	//Convert Node error to HTTP error response heref
+  res.send(result);
+});
 
-    res.send(result)}
+authRouter.get("/resetpassword", function (req, res) {
+  res.send("Reset Password    ");
+});
 
-
-  )
-
-authRouter.get('/resetpassword',function (req,res){
-    res.send('Reset Password    ')
-  })
-
-  
-
-  export {authRouter}
+export { authRouter };

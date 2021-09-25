@@ -1,5 +1,5 @@
-import csurf from 'csurf'
+import csurf from "csurf";
 
 export default csurf({
-    cookie:false
-})
+  cookie: false,
+});
