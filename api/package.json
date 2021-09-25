@@ -2,6 +2,7 @@
   "name": "api",
   "version": "1.0.0",
   "description": "Full Stack Typescript Starter",
+  "homepage": "https://github.com/RatchetWerks/Fullstack-Typescript-Starter",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
