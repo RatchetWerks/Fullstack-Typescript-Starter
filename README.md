@@ -1,6 +1,8 @@
 # Typescript Starter
 
 NOTE: WORK IN PROGRESS, DON'T FORK UNTIL THIS COMMENT IS REMOVED
+
+
 To start development:
 npm run dev
 
