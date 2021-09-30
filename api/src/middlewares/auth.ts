@@ -1,4 +1,4 @@
-import passport from "passport";
+import passport, { use } from "passport";
 
 import { Strategy } from "passport-local";
 import { pbkdf2Sync, randomBytes, timingSafeEqual } from "crypto";
@@ -12,9 +12,6 @@ declare global {
     }
   }
 }
-
-passport.initialize();
-passport.authenticate("session");
 
 export function validatePassword(
   password: string,
@@ -37,6 +34,11 @@ export function generatePasswordHash(password: string) {
   };
 }
 
+export function generatePasswordResetToken(input:string):string{
+
+  return 'test'
+}
+
 passport.use(
   new Strategy(
     {
@@ -44,8 +46,13 @@ passport.use(
     },
     //This tells Passport how to take user/password combo and validate against database
     function (email: string, password: string, cb) {
+
+      console.log("auth use local")
       findUserByEmail(email)
         .then((user) => {
+
+          if (user instanceof Error)
+            return cb (new Error("Auth email lookup failure"))
           if (!user) {
             return cb(null, false);
           }
@@ -61,6 +68,7 @@ passport.use(
         })
         //Need to fix error type with proper error typing
         .catch((err: any) => {
+          console.log(err)
           cb(err);
         });
     }
@@ -69,17 +77,20 @@ passport.use(
 
 passport.serializeUser(function (user, done) {
   //Serializes user to the session cookie sent back to the client
-  done(null, user.id);
+  done(null, user.email);
 });
 
 passport.deserializeUser(async function (email: string, done) {
   //Converts the data from the session into the server side user object
+  
   const user = await findUserByEmail(email).catch((err) => {
     done(err);
-    return null;
   });
 
-  done(null, user);
+
+  //False only happens when errors happen
+  done(null, user?user:false);
 });
+
 
 export default passport;

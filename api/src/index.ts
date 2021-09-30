@@ -5,7 +5,7 @@ import helmet from "./middlewares/helmet";
 import sessions from "./middlewares/sessions";
 import csurf from "./middlewares/csurf";
 import bodyParser from "./middlewares/bodyParser";
-import pss from "./middlewares/auth";
+import passport from "./middlewares/auth";
 //Routes
 
 import { authRouter } from "./services/users/UserRoutes";
@@ -25,6 +25,8 @@ app.use(cors);
 //Protect against CRSF attack by creating CSRF Token//
 app.use(bodyParser);
 app.use(csurf);
+app.use(passport.initialize())
+app.use(passport.session())
 app.set("port", env.PORT);
 
 app.get("/", (req, res) => {
@@ -36,7 +38,16 @@ app.get("/", (req, res) => {
   }
   const { views } = req.session;
 
-  res.status(200).send("This is the homepage. Here's your view number" + views);
+  res.status(200).send("This is the homepage. Here's your view number" + views +` email is ${req.user?.email}
+  <br/>
+  <a href="/login">Login</a>
+  <br/>
+  <a href="/logout">Logout</a>
+  <br/>
+  <a href="/register">Register</a>
+  <br/>
+  <a href="/forgotPassword">Forgot Password?</a>
+  `);
 });
 
 //Apply CRSF protection to all authenication routes
